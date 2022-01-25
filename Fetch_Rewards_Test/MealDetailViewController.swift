@@ -114,7 +114,6 @@ class MealDetailViewController: UIViewController {
                 }
                 
             case .failure(let error):
-                //INSERT UIALERT
                 print("Failed to fetch meal items:", error)
             }
         }

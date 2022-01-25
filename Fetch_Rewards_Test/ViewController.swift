@@ -8,7 +8,6 @@
 
 import UIKit
 
-
 class ViewController: UIViewController {
     
     private var arrayOfModelData: [Category] = []
@@ -30,7 +29,6 @@ class ViewController: UIViewController {
         self.tableView.dataSource = dataSource
     }
     
-    
     //MARK: - ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +36,8 @@ class ViewController: UIViewController {
         navigationItem.title = "The Meal DB"
         view.backgroundColor = .white
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(handleRefreshButton))
+      
         setupTableView()
         searchBar.delegate = self
         searchBar.placeholder = "search meal number...53050"
@@ -66,7 +66,7 @@ class ViewController: UIViewController {
             } catch let jsonError {
                 completion(.failure(jsonError))
             }
-            }.resume()
+        }.resume()
         
     }
     
@@ -93,6 +93,10 @@ class ViewController: UIViewController {
                 print("Failed to fetch categories:", error)
             }
         }
+    }
+    
+    @objc func handleRefreshButton() {
+        fetchCategories(with: urlAddress)
     }
 
 }

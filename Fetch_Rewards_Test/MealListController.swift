@@ -60,7 +60,7 @@ class MealListController: UIViewController {
             } catch let jsonError {
                 completion(.failure(jsonError))
             }
-            }.resume()
+        }.resume()
         
     }
     
