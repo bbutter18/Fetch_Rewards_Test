@@ -10,6 +10,8 @@ import XCTest
 @testable import Fetch_Rewards_Test
 
 class Fetch_Rewards_TestTests: XCTestCase {
+    
+    let apiClient = APIClient()
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -29,6 +31,28 @@ class Fetch_Rewards_TestTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testFetchCategories() {
+        let expectedResult = expectation(description: "Categories object")
+        var categoryObject: Categories?
+        var responseError: Error?
+        let urlRequest = "https://www.themealdb.com/api/json/v1/1/categories.php"
+        
+        apiClient.fetchJSON(with: urlRequest) { (response: Result<Categories, Error>) in
+            switch response {
+            case .success(let response):
+                categoryObject = response
+                expectedResult.fulfill()
+            case .failure(let error):
+                responseError = error
+            }
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertNil(responseError)
+        XCTAssertNotNil(categoryObject)
+        
     }
 
 }
