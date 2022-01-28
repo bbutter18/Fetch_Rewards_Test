@@ -55,4 +55,48 @@ class Fetch_Rewards_TestTests: XCTestCase {
         
     }
 
+    func testFetchMeals() {
+        let expectedResult = expectation(description: "Meals object")
+        var categoryObject: Meals?
+        var responseError: Error?
+        let urlRequest = "https://www.themealdb.com/api/json/v1/1/filter.php?c=seafood"
+        
+        apiClient.fetchJSON(with: urlRequest) { (response: Result<Meals, Error>) in
+            switch response {
+            case .success(let response):
+                categoryObject = response
+                expectedResult.fulfill()
+            case .failure(let error):
+                responseError = error
+            }
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertNil(responseError)
+        XCTAssertNotNil(categoryObject)
+        
+    }
+    
+    func testFetchMealItems() {
+        let expectedResult = expectation(description: "Meal Items object")
+        var categoryObject: MealItems?
+        var responseError: Error?
+        let urlRequest = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=53050"
+        
+        apiClient.fetchJSON(with: urlRequest) { (response: Result<MealItems, Error>) in
+            switch response {
+            case .success(let response):
+                categoryObject = response
+                expectedResult.fulfill()
+            case .failure(let error):
+                responseError = error
+            }
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+        XCTAssertNil(responseError)
+        XCTAssertNotNil(categoryObject)
+        
+    }
+    
 }
