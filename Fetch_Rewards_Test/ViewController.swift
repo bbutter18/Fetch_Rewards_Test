@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     private var filteredJSONModels: [Category] = []
     private var searchedMealNumber: String = ""
     private let urlAddress = "https://www.themealdb.com/api/json/v1/1/categories.php"
+    let apiClient = APIClient()
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -41,40 +42,17 @@ class ViewController: UIViewController {
         setupTableView()
         searchBar.delegate = self
         searchBar.placeholder = "search meal number...53050"
-
+        
         fetchCategories(with: urlAddress)
         
     }
     
     //MARK: - JSON Fetch Code
-    fileprivate func fetchJSON(with url: String, completion: @escaping (Result<Categories, Error>) -> Void) {
-        
-        let urlString = url
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            //success
-            do {
-                let categories = try JSONDecoder().decode(Categories.self, from: data!)
-                completion(.success(categories))
-            } catch let jsonError {
-                completion(.failure(jsonError))
-            }
-        }.resume()
-        
-    }
-    
     fileprivate func fetchCategories(with url: String) {
         
-        fetchJSON(with: url) { (result) in
+        self.apiClient.fetchJSON(with: url) { (response: Result<Categories, Error>) in
             
-            switch result {
+            switch response {
             case .success(let cats):
                 print("success")
                 self.filteredJSONModels = cats.categories.compactMap( { Category(name: $0.name)} )

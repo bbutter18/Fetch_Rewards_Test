@@ -14,6 +14,7 @@ class MealListController: UIViewController {
     private var arrayOfModelData: [Meal] = []
     private var filteredJSONModels: [Meal] = []
     var categorySelection: String = ""
+    let apiClient = APIClient()
 
     
     @IBOutlet weak var mealTableView: UITableView!
@@ -41,34 +42,11 @@ class MealListController: UIViewController {
     }
     
     //MARK: - JSON Fetch Code
-    fileprivate func fetchJSON(with url: String, completion: @escaping (Result<Meals, Error>) -> Void) {
-        
-        let urlString = url
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            //success
-            do {
-                let meals = try JSONDecoder().decode(Meals.self, from: data!)
-                completion(.success(meals))
-            } catch let jsonError {
-                completion(.failure(jsonError))
-            }
-        }.resume()
-        
-    }
-    
     fileprivate func fetchMeals(with url: String) {
         
-        fetchJSON(with: url) { (result) in
+        self.apiClient.fetchJSON(with: url) { (response: Result<Meals, Error>) in 
             
-            switch result {
+            switch response {
             case .success(let jsonMeals):
                 print("success")
                 self.filteredJSONModels = jsonMeals.meals.compactMap( { Meal(name: $0.name, id: $0.id)} )

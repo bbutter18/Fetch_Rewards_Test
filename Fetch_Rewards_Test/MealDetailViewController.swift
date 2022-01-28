@@ -23,6 +23,8 @@ class MealDetailViewController: UIViewController {
     private var finalIngredients: [String] = []
     private var finalMeasurements: [String] = []
     
+    let apiClient = APIClient()
+    
     //MARK: - UI Properties
     
     private let mealTitleLabel: UILabel = {
@@ -62,34 +64,11 @@ class MealDetailViewController: UIViewController {
     }
     
     //MARK: - JSON Fetch Code
-    fileprivate func fetchJSON(with url: String, completion: @escaping (Result<MealItems, Error>) -> Void) {
-        
-        let urlString = url
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            //success
-            do {
-                let mealDetails = try JSONDecoder().decode(MealItems.self, from: data!)
-                completion(.success(mealDetails))
-            } catch let jsonError {
-                completion(.failure(jsonError))
-            }
-        }.resume()
-        
-    }
-    
     fileprivate func fetchMealDetails(with url: String) {
         
-        fetchJSON(with: url) { (result) in
+        self.apiClient.fetchJSON(with: url) { (response: Result<MealItems, Error>) in
             
-            switch result {
+            switch response {
             case .success(let meal):
                 print("success")
                 
